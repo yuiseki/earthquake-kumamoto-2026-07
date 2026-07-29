@@ -81,9 +81,15 @@
   },
   {
    "rel": "license",
+   "href": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "type": "text/html",
+   "title": "CC0 1.0 Universal — compiled attributes, footprint and STAC metadata"
+  },
+  {
+   "rel": "license",
    "href": "https://opendatacommons.org/licenses/odbl/1-0/",
    "type": "text/html",
-   "title": "ODbL 1.0 (boundary geometry from OpenStreetMap)"
+   "title": "ODbL 1.0 — boundary geometry from OpenStreetMap"
   }
  ],
  "assets": {

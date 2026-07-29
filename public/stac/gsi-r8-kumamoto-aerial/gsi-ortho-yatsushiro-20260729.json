@@ -1229,6 +1229,12 @@
    "href": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
    "type": "text/html",
    "title": "Japan Public Data License 1.0 (equivalent to CC BY 4.0)"
+  },
+  {
+   "rel": "license",
+   "href": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "type": "text/html",
+   "title": "CC0 1.0 Universal — compiled attributes, footprint and STAC metadata"
   }
  ],
  "assets": {

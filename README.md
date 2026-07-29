@@ -178,5 +178,18 @@ IDs unconfirmed. See <https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.
 
 ## License
 
-Code and compiled attributes: CC0 1.0.
-Boundary geometry derives from OpenStreetMap and remains under **ODbL**.
+**[CC0 1.0 Universal](LICENSE)** (public domain dedication) for everything produced in this
+repository: the compiled attribute tables, the measured ortho footprint, the tidied oblique
+photo layer, the STAC metadata, the viewer and the build scripts. Use it however you like,
+no attribution required.
+
+Two upstream inputs carry their own terms and are **not** covered by the CC0 dedication:
+
+| Input | License | Where it appears |
+|---|---|---|
+| Administrative boundary geometry, from OpenStreetMap via Nominatim | **ODbL 1.0** | the `geometry` of every feature in `aoi.json` |
+| GSI aerial imagery and photo locations | **[Japan Public Data License 1.0](https://www.digital.go.jp/resources/open_data/public_data_license_v1.0)** (equivalent to CC BY 4.0, attribution required) | `gsi-oblique-photos-*.geojson`, and the imagery the STAC items point at |
+
+So: the numbers and the analysis are CC0, the polygons stay ODbL, and GSI imagery needs
+attribution to 国土地理院. If you only need the attributes and supply your own boundaries,
+nothing here constrains you.
