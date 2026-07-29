@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>令和8年熊本地震 被害焦点AOI / 2026 Kumamoto Earthquake damage-focus AOI</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+  html,body{margin:0;height:100%;font-family:system-ui,sans-serif}
+  #map{position:absolute;inset:0}
+  .panel{position:absolute;top:10px;left:10px;z-index:1;background:rgba(255,255,255,.94);
+         padding:10px 12px;border-radius:6px;font-size:12px;max-width:300px;line-height:1.5;
+         box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .panel h1{font-size:13px;margin:0 0 6px}
+  .sw{display:inline-block;width:11px;height:11px;margin-right:5px;vertical-align:-1px;border:1px solid #555}
+  .panel a{color:#06c}
+  .maplibregl-popup-content{font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="panel">
+  <h1>令和8年熊本地震 被害焦点AOI</h1>
+  発災後オルソが未撮影の地域を含む。優先度は震度・報告された構造物被害・撮影状況から。<br><br>
+  <span class="sw" style="background:#c1272d"></span>tier 1（震度7／死者／構造物崩落）<br>
+  <span class="sw" style="background:#f08c00"></span>tier 2（震度6強 等）<br>
+  <span class="sw" style="background:#f5d76e"></span>tier 3（震度6弱・5強）<br>
+  <span class="sw" style="background:#1f78b4;opacity:.55"></span>GSI 発災後オルソ被覆<br><br>
+  <a href="https://github.com/yuiseki/earthquake-kumamoto-2026-07">README / データ出典</a>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+const map = new maplibregl.Map({
+  container: 'map',
+  style: {
+    version: 8,
+    sources: {
+      gsi: {
+        type: 'raster',
+        tiles: ['https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
+      },
+      ortho: {
+        type: 'raster',
+        tiles: ['https://maps.gsi.go.jp/xyz/20260729kumamoto_yatsushiro_0729do_sokuho/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        minzoom: 10,
+        maxzoom: 18
+      }
+    },
+    layers: [
+      { id: 'gsi', type: 'raster', source: 'gsi' },
+      { id: 'ortho', type: 'raster', source: 'ortho', paint: { 'raster-opacity': 0.9 } }
+    ]
+  },
+  center: [130.72, 32.55],
+  zoom: 9
+});
+map.addControl(new maplibregl.NavigationControl());
+map.addControl(new maplibregl.ScaleControl());
+
+map.on('load', async () => {
+  const [aoi, cov] = await Promise.all([
+    fetch('data/aoi.json').then(r => r.json()),
+    fetch('data/gsi-ortho-coverage.json').then(r => r.json())
+  ]);
+
+  map.addSource('cov', { type: 'geojson', data: cov });
+  map.addLayer({
+    id: 'cov-fill', type: 'fill', source: 'cov',
+    paint: { 'fill-color': '#1f78b4', 'fill-opacity': 0.18 }
+  });
+
+  map.addSource('aoi', { type: 'geojson', data: aoi });
+  map.addLayer({
+    id: 'aoi-fill', type: 'fill', source: 'aoi',
+    paint: {
+      'fill-color': ['match', ['get', 'priority_tier'],
+        1, '#c1272d', 2, '#f08c00', 3, '#f5d76e', '#999'],
+      'fill-opacity': 0.28
+    }
+  });
+  map.addLayer({
+    id: 'aoi-line', type: 'line', source: 'aoi',
+    paint: {
+      'line-color': ['match', ['get', 'priority_tier'],
+        1, '#c1272d', 2, '#f08c00', 3, '#c9a227', '#999'],
+      'line-width': ['match', ['get', 'priority_tier'], 1, 2.4, 2, 1.6, 1]
+    }
+  });
+  map.addLayer({
+    id: 'aoi-label', type: 'symbol', source: 'aoi',
+    layout: { 'text-field': ['get', 'name'], 'text-size': 12 },
+    paint: { 'text-color': '#222', 'text-halo-color': '#fff', 'text-halo-width': 1.6 }
+  });
+
+  map.on('click', 'aoi-fill', (e) => {
+    const p = e.features[0].properties;
+    const sd = typeof p.reported_structural_damage === 'string'
+      ? JSON.parse(p.reported_structural_damage) : (p.reported_structural_damage || []);
+    new maplibregl.Popup({ maxWidth: '320px' })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<b>${p.name}</b> / ${p.name_en}<br>` +
+        `tier ${p.priority_tier}　震度 ${p.max_shindo ?? '記載なし'}<br>` +
+        `発災後オルソ: <b>${p.post_event_ortho_coverage_pct}%</b> (${p.post_event_ortho})<br>` +
+        (p.deaths ? `死者 ${p.deaths}名<br>` : '') +
+        (sd.length ? `構造物被害:<br><ul style="margin:2px 0 2px 16px;padding:0">${sd.map(s => `<li>${s}</li>`).join('')}</ul>` : '') +
+        (p.open_shelters_2026_07_29 !== null && p.open_shelters_2026_07_29 !== undefined
+          ? `開設中避難所 ${p.open_shelters_2026_07_29}（7/29）<br>` : '') +
+        (p.water_outage_households_2026_07_29
+          ? `断水 ${Number(p.water_outage_households_2026_07_29).toLocaleString()} 戸（参考）` : '')
+      )
+      .addTo(map);
+  });
+  map.on('mouseenter', 'aoi-fill', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', 'aoi-fill', () => { map.getCanvas().style.cursor = ''; });
+});
+</script>
+</body>
+</html>
