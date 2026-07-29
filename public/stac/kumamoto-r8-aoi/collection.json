@@ -1,0 +1,50 @@
+{
+ "type": "Collection",
+ "stac_version": "1.1.0",
+ "id": "kumamoto-r8-aoi",
+ "title": "Damage-focus AOI — 2026 Kumamoto earthquake",
+ "description": "HOT Tasking Manager / fAIr / MapSwipe 向けの被害焦点 AOI。",
+ "license": "other",
+ "extent": {
+  "spatial": {
+   "bbox": [
+    [
+     129.3216,
+     32.0092,
+     131.0256,
+     32.9799
+    ]
+   ]
+  },
+  "temporal": {
+   "interval": [
+    [
+     "2026-07-28T07:27:00Z",
+     null
+    ]
+   ]
+  }
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/kumamoto-r8-aoi/collection.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "root",
+   "href": "../catalog.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "parent",
+   "href": "../catalog.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "item",
+   "href": "damage-focus-aoi-20260730.json",
+   "type": "application/geo+json"
+  }
+ ]
+}

@@ -1,0 +1,99 @@
+{
+ "type": "Feature",
+ "stac_version": "1.1.0",
+ "id": "damage-focus-aoi-20260730",
+ "collection": "kumamoto-r8-aoi",
+ "bbox": [
+  129.3216,
+  32.0092,
+  131.0256,
+  32.9799
+ ],
+ "geometry": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     129.3216,
+     32.9799
+    ],
+    [
+     131.0256,
+     32.9799
+    ],
+    [
+     131.0256,
+     32.0092
+    ],
+    [
+     129.3216,
+     32.0092
+    ],
+    [
+     129.3216,
+     32.9799
+    ]
+   ]
+  ]
+ },
+ "properties": {
+  "title": "Damage-focus AOI, 2026 Kumamoto earthquake",
+  "description": "16市町村のポリゴンに、震度（本震=消防庁第17報／余震=気象庁249イベント）、報告された構造物被害、発災後オルソの実測被覆率を付与したもの。建物被害の公式集計は未公表のため代理指標で優先度を組んでいる。",
+  "datetime": "2026-07-30T00:00:00Z",
+  "providers": [
+   {
+    "name": "yuiseki",
+    "roles": [
+     "processor"
+    ],
+    "url": "https://github.com/yuiseki/earthquake-kumamoto-2026-07"
+   },
+   {
+    "name": "OpenStreetMap contributors",
+    "roles": [
+     "producer",
+     "licensor"
+    ],
+    "url": "https://www.openstreetmap.org/copyright"
+   }
+  ]
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/kumamoto-r8-aoi/damage-focus-aoi-20260730.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "root",
+   "href": "../catalog.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "parent",
+   "href": "collection.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "collection",
+   "href": "collection.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "license",
+   "href": "https://opendatacommons.org/licenses/odbl/1-0/",
+   "type": "text/html",
+   "title": "ODbL 1.0 (boundary geometry from OpenStreetMap)"
+  }
+ ],
+ "assets": {
+  "aoi": {
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json",
+   "type": "application/geo+json",
+   "title": "AOI polygons with damage proxies",
+   "roles": [
+    "data"
+   ]
+  }
+ }
+}

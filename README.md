@@ -26,8 +26,47 @@ distribution main does not imply building damage.
 |---|---|
 | [`public/data/aoi.json`](public/data/aoi.json) | 16 municipality polygons with damage proxies. Boundaries from OSM via Nominatim |
 | [`public/data/gsi-ortho-coverage.json`](public/data/gsi-ortho-coverage.json) | Measured footprint of the GSI post-event orthophoto (48 tiles at z13) |
+| [`public/data/gsi-oblique-photos-20260729.geojson`](public/data/gsi-oblique-photos-20260729.geojson) | 567 GSI oblique-photo locations, tidied: image links extracted from HTML, timestamps as ISO 8601 |
+| [`public/stac/catalog.json`](public/stac/catalog.json) | Static STAC 1.1.0 catalog (2 collections, 3 items) |
 
-Live: `https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json`
+Live:
+
+```
+https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json
+https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json
+```
+
+## Static STAC catalog
+
+STAC core has no way to express an XYZ tile service as an asset. The
+**[`web-map-links`](https://github.com/stac-extensions/web-map-links) extension (v1.2.0)**
+does: it defines link relations `xyz`, `wmts`, `tilejson`, `pmtiles` and `wms`. That is a
+stable published extension, unlike `tiled-assets`, which is still at proposal stage. So the
+GSI orthophoto is registered as an Item whose tile template is a `rel: "xyz"` link:
+
+```json
+{
+  "rel": "xyz",
+  "href": "https://maps.gsi.go.jp/xyz/20260729kumamoto_yatsushiro_0729do_sokuho/{z}/{x}/{y}.png",
+  "type": "image/png"
+}
+```
+
+```
+stac/catalog.json
+├── gsi-r8-kumamoto-aerial/collection.json      GSI aerial imagery, Japan PDL 1.0
+│   ├── gsi-ortho-yatsushiro-20260729.json      geometry = the 48 measured tiles (MultiPolygon)
+│   └── gsi-oblique-yatsushiro-20260729.json    567 photo points, no tile link
+└── kumamoto-r8-aoi/collection.json             this AOI
+    └── damage-focus-aoi-20260730.json
+```
+
+All six files validate against STAC 1.1.0 (`pystac.validate()`, 0 errors).
+
+Note this still does not make the imagery ingestible by OpenAerialMap: OAM's
+`item_assets` require a COG GeoTIFF, and a tile template is not one. Getting it into OAM
+would need tiles → COG → a STAC item pointing at the COG. The catalog here is for
+discovery and for QGIS / JOSM / iD consumption, not for OAM ingestion.
 
 ## The operational finding
 

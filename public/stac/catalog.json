@@ -1,0 +1,36 @@
+{
+ "type": "Catalog",
+ "stac_version": "1.1.0",
+ "id": "earthquake-kumamoto-2026-07",
+ "title": "2026 Kumamoto Earthquake — AOI and GSI imagery",
+ "description": "令和8年熊本地震（2026-07-28 16:27 JST, M7.1, 最大震度7）に関する被害焦点 AOI と、国土地理院が公開した空中写真の静的 STAC カタログ。XYZ タイルは web-map-links 拡張の rel=\"xyz\" で表現している。",
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "root",
+   "href": "catalog.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "child",
+   "href": "gsi-r8-kumamoto-aerial/collection.json",
+   "type": "application/json",
+   "title": "GSI aerial imagery"
+  },
+  {
+   "rel": "child",
+   "href": "kumamoto-r8-aoi/collection.json",
+   "type": "application/json",
+   "title": "Damage-focus AOI"
+  },
+  {
+   "rel": "via",
+   "href": "https://github.com/yuiseki/earthquake-kumamoto-2026-07",
+   "type": "text/html"
+  }
+ ]
+}
