@@ -20,7 +20,7 @@
    "interval": [
     [
      "2026-07-29T03:10:37Z",
-     "2026-07-29T04:54:31Z"
+     "2026-07-29T14:50:00Z"
     ]
    ]
   }
@@ -61,6 +61,17 @@
    "rel": "item",
    "href": "gsi-oblique-yatsushiro-20260729.json",
    "type": "application/geo+json"
+  },
+  {
+   "rel": "item",
+   "href": "gsi-slope-failure-yatsushiro-20260730.json",
+   "type": "application/geo+json"
+  },
+  {
+   "rel": "license",
+   "href": "https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html",
+   "type": "text/html",
+   "title": "国土地理院コンテンツ利用規約（出典明示で転載可）"
   },
   {
    "rel": "license",

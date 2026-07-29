@@ -8,8 +8,12 @@ M7.1, 2026-07-28 16:27 JST. Max JMA intensity **7** at Uki City (Toyono) and Hik
 
 As of 2026-07-30 there is **no official building-damage dataset**. FDMA report #17
 (2026-07-29 16:30) lists housing damage only for Fukuoka (4 partially damaged);
-the Kumamoto column is blank. Neither GSI nor MLIT publishes priority-affected-area
-polygons.
+the Kumamoto column is blank.
+
+There *is* now an official **slope-failure** dataset, published 2026-07-30 and included
+here, and it carries an interpretation-extent polygon of 509 km² which is the closest
+thing to an official affected-area boundary. See
+[GSI slope-failure interpretation](#gsi-slope-failure-interpretation) below.
 
 So this AOI is built from **proxies**, in this priority order:
 
@@ -30,8 +34,10 @@ iD, a STAC browser, or `fetch()`.
 | <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json> | 16 municipality polygons with damage proxies. Boundaries from OSM via Nominatim |
 | <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-ortho-coverage.json> | Measured footprint of the GSI post-event orthophoto (48 tiles at z13) |
 | <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-oblique-photos-20260729.geojson> | 567 GSI oblique-photo locations, tidied: image links extracted from HTML, timestamps as ISO 8601 |
-| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json> | Static STAC 1.1.0 catalog (2 collections, 3 items) |
-| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/> | Map viewer (AOI + GSI post-event ortho overlay) |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-slope-failure-20260730.geojson> | GSI slope-failure / debris-flow / deposit interpretation, 21 polygons, `class` decoded from the published legend |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-interpretation-extent.geojson> | GSI interpretation extent, 509 km². The closest thing to an official affected-area polygon |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json> | Static STAC 1.1.0 catalog (2 collections, 4 items) |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/> | Map viewer: AOI, GSI post-event ortho, slope failures, cloud gaps |
 
 ```bash
 curl -s https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json \
@@ -58,14 +64,15 @@ GSI orthophoto is registered as an Item whose tile template is a `rel: "xyz"` li
 
 ```
 stac/catalog.json
-├── gsi-r8-kumamoto-aerial/collection.json      GSI aerial imagery, Japan PDL 1.0
-│   ├── gsi-ortho-yatsushiro-20260729.json      geometry = the 48 measured tiles (MultiPolygon)
-│   └── gsi-oblique-yatsushiro-20260729.json    567 photo points, no tile link
-└── kumamoto-r8-aoi/collection.json             this AOI
+├── gsi-r8-kumamoto-aerial/collection.json          GSI aerial imagery and derived products
+│   ├── gsi-ortho-yatsushiro-20260729.json          geometry = the 48 measured tiles (MultiPolygon)
+│   ├── gsi-oblique-yatsushiro-20260729.json        567 photo points, no tile link
+│   └── gsi-slope-failure-yatsushiro-20260730.json  derived_from the orthophoto item
+└── kumamoto-r8-aoi/collection.json                 this AOI
     └── damage-focus-aoi-20260730.json
 ```
 
-All six files validate against STAC 1.1.0 (`pystac.validate()`, 0 errors).
+All seven files validate against STAC 1.1.0 (`pystac.validate()`, 0 errors).
 
 Note this still does not make the imagery ingestible by OpenAerialMap: OAM's
 `item_assets` require a COG GeoTIFF, and a tile template is not one. Getting it into OAM
@@ -119,8 +126,16 @@ Two of the three damage clusters are outside current imagery:
   "name": "氷川町",
   "name_en": "Hikawa",
   "priority_tier": 1,
-  "max_shindo": "7",
-  "reported_structural_damage": ["住宅座屈2件（消防庁第17報の救助対応中事案）"],
+  "mainshock_shindo": "7",
+  "mainshock_shindo_source": "消防庁 第17報 (2026-07-29 16:30)",
+  "aftershock_max_shindo": "4",
+  "n_shindo_ge4": 3,
+  "n_shindo_ge3": 11,
+  "n_felt": 56,
+  "aftershock_window": "2026-07-28T16:27:00+09:00 .. 2026-07-30T06:25:00+09:00",
+  "reported_structural_damage": [
+    "住宅座屈2件（消防庁第17報の救助対応中事案）"
+  ],
   "deaths": 0,
   "post_event_ortho": "partial",
   "post_event_ortho_coverage_pct": 52,
@@ -135,6 +150,46 @@ Two of the three damage clusters are outside current imagery:
 2 = intensity 6+, or fatalities without a listed intensity. 3 = intensity 6- / 5+.
 
 `null` means not published. No value here is estimated or interpolated.
+
+## GSI slope-failure interpretation
+
+Published 2026-07-30, interpreted from the 2026-07-29 orthophoto (interpretation finished
+2026-07-29 23:50 JST). Served as a **GeoJSON polygon layer at z2**, not raster tiles:
+
+```
+https://maps.gsi.go.jp/xyz/20260729kumamoto_syamenhoukai_dosekiryu_taiseki_yatsushiro/2/3/1.geojson
+```
+
+The upstream features carry **only styling attributes** (`_fillColor` and friends), no
+semantics. The meaning is in the colours, so `class` here is decoded against the published
+legend:
+
+| `class` | Upstream fill | Features | Area |
+|---|---|---:|---:|
+| `slope_failure_debris_deposit` 斜面崩壊・土石流・堆積範囲 | `#ff3232` | 8 | 0.012 km² |
+| `unreadable_due_to_cloud` 雲による未判読範囲 | `#646464` | 12 | 1.283 km² |
+| `interpretation_extent` 判読範囲 | `#3388ff` outline | 1 | 509.0 km² |
+
+By municipality (centroid test):
+
+| | slope failure | cloud gap |
+|---|---|---|
+| Yatsushiro 八代市 | 6 features, 8,744 m² | 5 features, 0.569 km² |
+| Ashikita 芦北町 | 1 feature, 1,476 m² | 7 features, 0.714 km² |
+| Hikawa 氷川町 | 1 feature, 1,593 m² | none |
+
+Two things matter operationally.
+
+**The cloud gaps are holes in the data, not damage.** 1.28 km² inside the flown area could
+not be interpreted because cloud covered it. fAIr cannot read those pixels either. Those
+12 polygons need either a re-flight or ground truth. Coverage measured by tile response
+(`post_event_ortho_coverage_pct` in `aoi.json`) does **not** account for this.
+
+**The slope failures are small and few.** 8 features totalling 0.012 km², against 509 km²
+interpreted. GSI states the interpretation is not field-verified, may miss real failures
+and may include failures unrelated to this earthquake, and only shows features roughly
+30 m or larger in length or width. So this is a lower bound, but it does suggest this
+earthquake did not produce widespread slope failure in the flown area.
 
 ## Caveats
 
@@ -161,9 +216,15 @@ https://maps.gsi.go.jp/xyz/20260729kumamoto_yatsushiro_0729naname/{z}/{x}/{y}.ge
 Each point links a JPG under https://saigai.gsi.go.jp/1/R8_kumamoto/0729yatsushiro_naname/
 ```
 
-GSI also lists a slope-failure / sediment-deposit interpretation (published 2026-07-30)
-and preliminary vertical photos, but their tile endpoints did not respond to probing;
-IDs unconfirmed. See <https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.html>.
+```
+# Slope failure / debris flow / deposit interpretation, published 2026-07-30 — GeoJSON at z2
+https://maps.gsi.go.jp/xyz/20260729kumamoto_syamenhoukai_dosekiryu_taiseki_yatsushiro/2/3/1.geojson
+```
+
+GSI also lists preliminary vertical photos
+(`20260729kumamoto_yatsushiro_0729suichoku_sokuho`), but that endpoint did not respond to
+probing in either `.png` or `.geojson`. See
+<https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.html>.
 
 ## Sources
 
@@ -188,8 +249,8 @@ Two upstream inputs carry their own terms and are **not** covered by the CC0 ded
 | Input | License | Where it appears |
 |---|---|---|
 | Administrative boundary geometry, from OpenStreetMap via Nominatim | **ODbL 1.0** | the `geometry` of every feature in `aoi.json` |
-| GSI aerial imagery and photo locations | **[Japan Public Data License 1.0](https://www.digital.go.jp/resources/open_data/public_data_license_v1.0)** (equivalent to CC BY 4.0, attribution required) | `gsi-oblique-photos-*.geojson`, and the imagery the STAC items point at |
+| GSI aerial imagery, photo locations and slope-failure interpretation | **[国土地理院コンテンツ利用規約](https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html)** — redistribution is explicitly permitted as long as the source is credited to 国土地理院. Hidenori also cites [Japan PDL 1.0](https://www.digital.go.jp/resources/open_data/public_data_license_v1.0) (CC BY 4.0 equivalent) for GSI open data | `gsi-oblique-photos-*.geojson`, `gsi-slope-failure-*.geojson`, `gsi-interpretation-extent.geojson`, and the imagery the STAC items point at |
 
-So: the numbers and the analysis are CC0, the polygons stay ODbL, and GSI imagery needs
-attribution to 国土地理院. If you only need the attributes and supply your own boundaries,
+So: the numbers and the analysis are CC0, the administrative polygons stay ODbL, and the
+GSI layers need attribution to 国土地理院 (redistribution itself is allowed). If you only need the attributes and supply your own boundaries,
 nothing here constrains you.

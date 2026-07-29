@@ -25,7 +25,10 @@
   <span class="sw" style="background:#c1272d"></span>tier 1（震度7／死者／構造物崩落）<br>
   <span class="sw" style="background:#f08c00"></span>tier 2（震度6強 等）<br>
   <span class="sw" style="background:#f5d76e"></span>tier 3（震度6弱・5強）<br>
-  <span class="sw" style="background:#1f78b4;opacity:.55"></span>GSI 発災後オルソ被覆<br><br>
+  <span class="sw" style="background:#1f78b4;opacity:.55"></span>GSI 発災後オルソ被覆<br>
+  <span class="sw" style="background:#ff3232"></span>斜面崩壊・土石流・堆積（GSI判読）<br>
+  <span class="sw" style="background:#646464"></span>雲による未判読範囲（GSI）<br>
+  <span class="sw" style="background:transparent;border:2px solid #0a0"></span>GSI 判読範囲 509km²<br><br>
   <a href="https://github.com/yuiseki/earthquake-kumamoto-2026-07">README / データ出典</a>
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
@@ -61,9 +64,10 @@ map.addControl(new maplibregl.NavigationControl());
 map.addControl(new maplibregl.ScaleControl());
 
 map.on('load', async () => {
-  const [aoi, cov] = await Promise.all([
+  const [aoi, cov, slope] = await Promise.all([
     fetch('data/aoi.json').then(r => r.json()),
-    fetch('data/gsi-ortho-coverage.json').then(r => r.json())
+    fetch('data/gsi-ortho-coverage.json').then(r => r.json()),
+    fetch('data/gsi-slope-failure-20260730.geojson').then(r => r.json())
   ]);
 
   map.addSource('cov', { type: 'geojson', data: cov });
@@ -93,6 +97,46 @@ map.on('load', async () => {
     id: 'aoi-label', type: 'symbol', source: 'aoi',
     layout: { 'text-field': ['get', 'name'], 'text-size': 12 },
     paint: { 'text-color': '#222', 'text-halo-color': '#fff', 'text-halo-width': 1.6 }
+  });
+
+  // 国土地理院の判読成果。斜面崩壊は面積が小さいので最前面に置く
+  map.addSource('slope', { type: 'geojson', data: slope });
+  map.addLayer({
+    id: 'slope-extent', type: 'line', source: 'slope',
+    filter: ['==', ['get', 'class'], 'interpretation_extent'],
+    paint: { 'line-color': '#00aa00', 'line-width': 2, 'line-dasharray': [3, 2] }
+  });
+  map.addLayer({
+    id: 'slope-cloud', type: 'fill', source: 'slope',
+    filter: ['==', ['get', 'class'], 'unreadable_due_to_cloud'],
+    paint: { 'fill-color': '#646464', 'fill-opacity': 0.5, 'fill-outline-color': '#000' }
+  });
+  map.addLayer({
+    id: 'slope-failure', type: 'fill', source: 'slope',
+    filter: ['==', ['get', 'class'], 'slope_failure_debris_deposit'],
+    paint: { 'fill-color': '#ff3232', 'fill-opacity': 0.75, 'fill-outline-color': '#ff0000' }
+  });
+  // 面積が小さく低ズームでは見えないので円も重ねる
+  map.addLayer({
+    id: 'slope-failure-dot', type: 'circle', source: 'slope',
+    filter: ['==', ['get', 'class'], 'slope_failure_debris_deposit'],
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 5, 14, 2],
+      'circle-color': '#ff3232', 'circle-stroke-color': '#fff', 'circle-stroke-width': 1,
+      'circle-opacity': ['interpolate', ['linear'], ['zoom'], 12, 1, 14, 0]
+    }
+  });
+
+  map.on('click', ['slope-failure', 'slope-failure-dot', 'slope-cloud'], (e) => {
+    const p = e.features[0].properties;
+    new maplibregl.Popup({ maxWidth: '300px' })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<b>${p.class_ja}</b><br>約 ${Number(p.area_m2).toLocaleString()} m²<br>` +
+        `<small>国土地理院が 2026-07-29 撮影の正射画像を判読（現地調査なし、` +
+        `おおむね30m以上のみ）</small>`
+      )
+      .addTo(map);
   });
 
   map.on('click', 'aoi-fill', (e) => {

@@ -1,0 +1,129 @@
+{
+ "type": "Feature",
+ "stac_version": "1.1.0",
+ "stac_extensions": [],
+ "id": "gsi-slope-failure-yatsushiro-20260730",
+ "collection": "gsi-r8-kumamoto-aerial",
+ "bbox": [
+  130.4311,
+  32.2444,
+  130.7714,
+  32.5894
+ ],
+ "geometry": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     130.4311,
+     32.5894
+    ],
+    [
+     130.7714,
+     32.5894
+    ],
+    [
+     130.7714,
+     32.2444
+    ],
+    [
+     130.4311,
+     32.2444
+    ],
+    [
+     130.4311,
+     32.5894
+    ]
+   ]
+  ]
+ },
+ "properties": {
+  "title": "GSI slope failure / debris flow / deposit interpretation, Yatsushiro district",
+  "description": "国土地理院が 2026-07-29 撮影の正射画像を判読して作成した斜面崩壊・土石流・堆積範囲。現地調査は未実施で、長さ又は幅がおおむね30m以上のものだけを表示。雲による未判読範囲と判読対象範囲も同じレイヤーに含まれる。上流データの属性はスタイル情報のみなので、公開凡例と対照して class を復号した。",
+  "datetime": "2026-07-29T14:50:00Z",
+  "created": "2026-07-30T00:00:00Z",
+  "providers": [
+   {
+    "name": "Geospatial Information Authority of Japan (GSI)",
+    "roles": [
+     "producer",
+     "licensor",
+     "host"
+    ],
+    "url": "https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.html"
+   }
+  ],
+  "kumamoto:tileset_id": "20260729kumamoto_syamenhoukai_dosekiryu_taiseki_yatsushiro",
+  "kumamoto:serving_format": "GeoJSON polygon layer at z2 (not raster tiles)",
+  "kumamoto:slope_failure_features": 8,
+  "kumamoto:cloud_gap_features": 12,
+  "kumamoto:field_verified": false,
+  "kumamoto:min_feature_size_m": 30
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/gsi-r8-kumamoto-aerial/gsi-slope-failure-yatsushiro-20260730.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "root",
+   "href": "../catalog.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "parent",
+   "href": "collection.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "collection",
+   "href": "collection.json",
+   "type": "application/json"
+  },
+  {
+   "rel": "derived_from",
+   "href": "gsi-ortho-yatsushiro-20260729.json",
+   "type": "application/geo+json",
+   "title": "Orthophoto the interpretation was made from"
+  },
+  {
+   "rel": "via",
+   "href": "https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.html#9",
+   "type": "text/html"
+  },
+  {
+   "rel": "license",
+   "href": "https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html",
+   "type": "text/html",
+   "title": "国土地理院コンテンツ利用規約（出典明示で転載可）"
+  }
+ ],
+ "assets": {
+  "interpretation": {
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-slope-failure-20260730.geojson",
+   "type": "application/geo+json",
+   "title": "Decoded interpretation (21 polygons, class added)",
+   "roles": [
+    "data"
+   ]
+  },
+  "interpretation_extent": {
+   "href": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-interpretation-extent.geojson",
+   "type": "application/geo+json",
+   "title": "Interpretation extent only (509 km2) — the closest thing to an official affected-area polygon",
+   "roles": [
+    "data",
+    "metadata"
+   ]
+  },
+  "upstream": {
+   "href": "https://maps.gsi.go.jp/xyz/20260729kumamoto_syamenhoukai_dosekiryu_taiseki_yatsushiro/2/3/1.geojson",
+   "type": "application/geo+json",
+   "title": "Upstream GeoJSON tile (style attributes only)",
+   "roles": [
+    "data"
+   ]
+  }
+ }
+}
