@@ -22,18 +22,22 @@ distribution main does not imply building damage.
 
 ## Data
 
-| File | Content |
+All files are served over HTTPS with CORS, so they can be loaded straight into QGIS, JOSM,
+iD, a STAC browser, or `fetch()`.
+
+| URL | Content |
 |---|---|
-| [`public/data/aoi.json`](public/data/aoi.json) | 16 municipality polygons with damage proxies. Boundaries from OSM via Nominatim |
-| [`public/data/gsi-ortho-coverage.json`](public/data/gsi-ortho-coverage.json) | Measured footprint of the GSI post-event orthophoto (48 tiles at z13) |
-| [`public/data/gsi-oblique-photos-20260729.geojson`](public/data/gsi-oblique-photos-20260729.geojson) | 567 GSI oblique-photo locations, tidied: image links extracted from HTML, timestamps as ISO 8601 |
-| [`public/stac/catalog.json`](public/stac/catalog.json) | Static STAC 1.1.0 catalog (2 collections, 3 items) |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json> | 16 municipality polygons with damage proxies. Boundaries from OSM via Nominatim |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-ortho-coverage.json> | Measured footprint of the GSI post-event orthophoto (48 tiles at z13) |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-oblique-photos-20260729.geojson> | 567 GSI oblique-photo locations, tidied: image links extracted from HTML, timestamps as ISO 8601 |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json> | Static STAC 1.1.0 catalog (2 collections, 3 items) |
+| <https://yuiseki.github.io/earthquake-kumamoto-2026-07/> | Map viewer (AOI + GSI post-event ortho overlay) |
 
-Live:
-
-```
-https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json
-https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json
+```bash
+curl -s https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json \
+  | jq -r '.features[].properties
+           | [.name_en, .priority_tier, .mainshock_shindo, .post_event_ortho_coverage_pct]
+           | @tsv'
 ```
 
 ## Static STAC catalog
