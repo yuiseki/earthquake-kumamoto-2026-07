@@ -230,11 +230,11 @@ probing in either `.png` or `.geojson`. See
 
 - FDMA report #17, 2026-07-29 16:30 — intensity, casualties, rescue cases
 - MLIT report #5, 2026-07-29 12:00 — water outage by municipality
+- JMA hypocentre and intensity bulletins — aftershock counts (249 events excluding the mainshock)
 - Kumamoto Prefecture disaster portal `portal.bousai.pref.kumamoto.jp` — open shelters
   (redistribution requires prior contact with the prefecture; only counts are used here)
 - GSI <https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.html> — imagery
   (Japan PDL 1.0, equivalent to CC BY 4.0)
-- NHK 2026-07-29 13:00 — Hikawa car-camping evacuees
 - Boundaries: OpenStreetMap via Nominatim (ODbL)
 
 ## License

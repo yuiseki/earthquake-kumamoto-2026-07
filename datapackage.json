@@ -1,0 +1,110 @@
+{
+  "name": "earthquake-kumamoto-2026-07",
+  "title": "令和8年熊本地震（2026-07-28）被害焦点 AOI",
+  "description": "HOT Tasking Manager / fAIr / MapSwipe 向けの被害焦点 AOI。観測震度、個別に報告された構造物被害、震災後の国土地理院オルソ画像の有無を代理指標として16市町村のポリゴンに属性を付けたもの。",
+  "homepage": "https://github.com/yuiseki/earthquake-kumamoto-2026-07",
+  "created": "2026-07-29",
+  "licenses": [
+    {
+      "name": "CC0-1.0",
+      "path": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "title": "このリポジトリで作成したもの（属性表、計測したオルソ被覆、整形した斜め写真レイヤ、STAC メタデータ、ビューア、スクリプト）"
+    }
+  ],
+  "sources": [
+    {
+      "title": "消防庁 第17報（2026-07-29 16:30）",
+      "description": "本震の観測震度、死傷者、救助対応中事案。aoi.json の mainshock_shindo_source と reported_structural_damage",
+      "retrieved_at": "2026-07-29"
+    },
+    {
+      "title": "気象庁 震源・震度情報",
+      "description": "余震の集計（本震を除く249イベント）。aoi.json の aftershock_source",
+      "retrieved_at": "2026-07-30"
+    },
+    {
+      "title": "国土交通省 第5報（2026-07-29 12:00）",
+      "description": "市町村別の断水戸数。aoi.json の water_outage_households_2026_07_29",
+      "retrieved_at": "2026-07-29"
+    },
+    {
+      "title": "国土地理院 令和8年熊本地震に関する情報",
+      "path": "https://www.gsi.go.jp/BOUSAI/20260728_kumamoto_earthquake.html",
+      "license": "国土地理院コンテンツ利用規約。出典を国土地理院と明示すれば再配布可",
+      "terms": "https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html",
+      "retrieved_at": "2026-07-30",
+      "description": "震災後オルソ画像、斜め写真、斜面崩壊判読。gsi-* の各ファイルと STAC が指す画像"
+    },
+    {
+      "title": "熊本県 防災情報ポータル（開設避難所）",
+      "path": "https://portal.bousai.pref.kumamoto.jp/",
+      "license": "再配布には熊本県への事前連絡が必要。このリポジトリでは件数のみを利用し、レコードは再配布していない",
+      "retrieved_at": "2026-07-29",
+      "description": "開設避難所の件数。aoi.json の open_shelters_2026_07_29。件数のみ利用しレコードは再配布していない"
+    },
+    {
+      "title": "OpenStreetMap（Nominatim 経由の行政境界ジオメトリ）",
+      "path": "https://nominatim.openstreetmap.org/",
+      "license": "ODbL-1.0",
+      "terms": "https://www.openstreetmap.org/copyright",
+      "retrieved_at": "2026-07-29",
+      "description": "16市町村の行政境界ジオメトリ。aoi.json の geometry と osm_id / osm_type"
+    }
+  ],
+  "resources": [
+    {
+      "name": "aoi",
+      "title": "16市町村の被害代理指標付きポリゴン",
+      "path": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/aoi.json",
+      "format": "geojson",
+      "mediatype": "application/geo+json",
+      "bytes": 980821,
+      "hash": "sha256:fb267d4f2bb25bbdeecf175b4c45ebdaa6dc829de590c0c9a5a126f629456e1c"
+    },
+    {
+      "name": "gsi-ortho-coverage",
+      "title": "震災後の国土地理院オルソ画像の被覆範囲（z13 で48タイル）",
+      "path": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-ortho-coverage.json",
+      "format": "geojson",
+      "mediatype": "application/geo+json",
+      "bytes": 16169,
+      "hash": "sha256:8cb9e4846611a17c06553c93f66f93bb939e745ab6e87f9c95346ebaa6174d0d"
+    },
+    {
+      "name": "gsi-oblique-photos",
+      "title": "国土地理院の斜め写真の撮影位置 567件",
+      "path": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-oblique-photos-20260729.geojson",
+      "format": "geojson",
+      "mediatype": "application/geo+json",
+      "bytes": 283090,
+      "hash": "sha256:6635a9f56c2c4ad92be01538183b2b9db23a2e080c9c5dae547666359b740a92"
+    },
+    {
+      "name": "gsi-slope-failure",
+      "title": "国土地理院の斜面崩壊・土石流・堆積の判読 21ポリゴン",
+      "path": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-slope-failure-20260730.geojson",
+      "format": "geojson",
+      "mediatype": "application/geo+json",
+      "bytes": 25121,
+      "hash": "sha256:652c022d0265a10d6a9f6191a199b167f9ad8673de2c13b734e95dfc82286daf"
+    },
+    {
+      "name": "gsi-interpretation-extent",
+      "title": "国土地理院の判読範囲 509km2",
+      "path": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/data/gsi-interpretation-extent.geojson",
+      "format": "geojson",
+      "mediatype": "application/geo+json",
+      "bytes": 4144,
+      "hash": "sha256:c9b443649b8d63f2a917b05615f87f5afc4f2d869f37e0f82ce881b2f90613c2"
+    },
+    {
+      "name": "stac-catalog",
+      "title": "静的 STAC 1.1.0 カタログ",
+      "path": "https://yuiseki.github.io/earthquake-kumamoto-2026-07/stac/catalog.json",
+      "format": "json",
+      "mediatype": "application/json",
+      "bytes": 1062,
+      "hash": "sha256:5eeba7577498d467b7d57e943ba4f372827991da8eb57ea69baab000106e86ab"
+    }
+  ]
+}
